@@ -35,6 +35,7 @@
 \usepackage{times}
 \usepackage{url}
 \usepackage{latexsym}
+\usepackage{textcomp}
 
 %\setlength\titlebox{5cm}
 \setlength\titlebox{6.5cm}
@@ -55,7 +56,7 @@
 \newcommand\wtv{\texttt{w2v}\xspace}
 
 \newcommand{\mytitle}{bot.zen @ EVALITA 2016 - A minimally-deep learning PoS-tagger \\
-    (trained for Italian CMC)}
+    (trained for Italian Tweets)}
 \newcommand{\mypdftitle}{\mytitle}
 \newcommand{\mypdfsubject}{}
 \newcommand{\mystitle}{bot.zen - A minimally-deep learning PoS-tagger}
@@ -99,12 +100,12 @@
 \begin{abstract} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textbf{English.}  
 This article describes the system that participated in the \emph{POS tagging
-for Italian Social Media Texts} (PoSTWITA) task of the 5th periodic evaluation
-campaign of Natural Language Processing (NLP) and speech tools for the Italian
-language EVALITA 2016.
+for Italian Social Media Texts} (PoSTWITA) task of the 5\textsuperscript{th}
+periodic evaluation campaign of Natural Language Processing (NLP) and speech
+tools for the Italian language EVALITA 2016.
 
-The system continues the work of \newcite{stemle:2016:WAC-X} with minor
-modifications and different data sets.  
+The work is a continuation of \newcite{stemle:2016:WAC-X} with minor
+modifications to the system and different data sets.  
 It combines a small assertion of trending techniques, which implement matured
 methods, from NLP and ML to achieve competitive results on PoS tagging of
 Italian Twitter texts; in particular, the system uses word embeddings and
@@ -117,12 +118,25 @@ The system is available under the APLv2 open-source license.
 \end{abstract}
 
 \begin{abstract-alt}
-    \textrm{\bf{Italiano.}} Foo Bar
-\end{abstract-alt}
+\textrm{\bf{Italiano.}}
+Questo articolo viene descritto il sistema che ha partecipato alla \emph{POS
+tagging for Italian Social Media Texts} (PoSTWITA) task del
+5\textdegree~campagna di valutazione periodica degli strumenti del Natural
+Language Processing (NLP) e gli strumenti del linguaggio per la lingua italiana
+EVALITA 2016.
 
-%\footnote{\url{http://corpora.ficlit.unibo.it/PoSTWITA/}}
-%\footnote{\url{http://www.evalita.it/2016}}
- 
+Il sistema continua l'opera di \newcite{stemle:2016:WAC-X} con piccole
+modifiche e diversi set di dati. 
+Esso combina una piccola affermazione di tecniche di tendenza, che implementano
+maturati metodi, dalla NLP e ML di raggiungere risultati competitivi in pos
+codifica dei testi Twitter italiani; in particolare, il sistema utilizza
+incastri di parole e rappresentazioni a livello di carattere di inizio di
+parole e terminazioni in un'architettura LSTM RNN. 
+Dati etichettati (Italiano corpus UD, Didi e PoSTWITA) ei dati non etichettati
+(italiano C4Corpus e Paisà) sono stati utilizzati per la formazione.
+
+Il sistema è disponibile sotto la licenza open-source APLv2.
+\end{abstract-alt}
 
 
 \section{Introduction} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -152,8 +166,6 @@ and specific PoS-tagging tools.\footnote{http://www.evalita.it/2016/tasks/postwi
 To this end, the \emph{POS tagging for Italian Social Media Texts} (PoSTWITA)
 task was proposed for EVALITA 2016 concerning the domain adaptation of
 PoS-taggers to Twitter texts.
-The systems were evaluated by the organisers on unlabelled but pre-tokenised
-data (4759 tokens in 301 tweets).
 
 Our system combined \texttt{word2vec} (\wtv) word embeddings (WEs) with a
 single-layer Long Short Term Memory (LSTM) recurrent neural network (RNN)
@@ -165,7 +177,7 @@ RNN which in turn predicts PoS labels.
 The paper is organised as follows: We present our system design in
 Section~\ref{sec:design}, the implementation in
 Section~\ref{sec:implementation}, and its evaluation in
-Section~\ref{sec:casestudies}. 
+Section~\ref{sec:results}. 
 Section~\ref{sec:conclusion} concludes with an outlook on possible
 implementation improvements.
 
@@ -175,8 +187,9 @@ implementation improvements.
 Overall, our design takes inspiration from as far back as~\newcite{Benello1989}
 who used four preceding words and one following word in a feed-forward neural
 network with backpropagation for PoS tagging, builds upon the strong foundation
-laid down by~\newcite{collobert:2011b} for a NN architecture and learning
-algorithm that can be applied to various natural language processing tasks, and
+laid down by~\newcite{collobert:2011b} for a neural network (NN) architecture
+and learning algorithm that can be applied to various natural language
+processing tasks, and
 ultimately is a variation of
 % achieved an accuracy of $0.95$ on the Brown Corpus.
 ~\newcite{santos2014learning} who trained a NN for PoS tagging, with 
@@ -245,10 +258,10 @@ A straight-forward approach to incorporate WEs into feature-based
 language models is to use the embeddings' vector representations as
 features.\footnote{For an overview see,
 e.g.~\newcite{Turian:2010:WRS:1858681.1858721}.}
-Having said that, WEs are also used in neural network architectures, where they
-constitute (part of) the input to the network. 
+Having said that, WEs are also used in NN architectures, where they constitute
+(part of) the input to the network. 
 
-Neural networks (NNs) consist of a large number of simple, highly interconnected
+Neural networks consist of a large number of simple, highly interconnected
 processing nodes in an architecture loosely inspired by the structure of the
 cerebral cortex of the brain~\cite{oreilly2000}.
 The nodes receive weighted inputs through these connections and \emph{fire}
@@ -271,7 +284,7 @@ a very popular kind is the so called long short-term memory (LSTM)
 network proposed by~\newcite{Hochreiter:1997:LSM:1246443.1246450}.
 
 Overall, with this design we not only benefit from available labelled data but
-also from available general and domain-specific unlabelled data.
+also from available general or domain-specific unlabelled data.
 
 \section{Implementation} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:implementation}
@@ -279,7 +292,7 @@ also from available general and domain-specific unlabelled data.
 We maintain the implementation in a source code repository at
 \url{https://github.com/bot-zen/}.  
 The version tagged as {\tt 1.1} comprises the version that was used to generate
-the results submitted to the ST.
+the results submitted to the shared task (ST).
 
 Our system feeds WEs and character-level sub-word information into a
 single-layer RNN with a LSTM architecture.
@@ -287,22 +300,22 @@ single-layer RNN with a LSTM architecture.
 
 \subsection{Word Embeddings} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%When computing WEs we keep in mind that \newcite{TACL570} observed that one
-%specific configuration of~\wtv, namely the skip-gram model with negative
-%sampling (SGNS) 
-%"is a robust baseline.  While it might not be the best method for every task,
-%it does not significantly underperform in any scenario. Moreover, SGNS is the
-%fastest method to train, and cheapest (by far) in terms of disk space and
-%memory consumption".
-%Coincidentally,~\newcite{arXiv:1310.4546} also suggest to use SGNS
-We incorporates \wtv's original C implementation for learning WEs%
+When computing WEs we take into consideration \newcite{TACL570}: they observed
+that one specific configuration of~\wtv, namely the skip-gram model with
+negative sampling (SGNS) 
+"is a robust baseline.  While it might not be the best method for every task,
+it does not significantly underperform in any scenario. Moreover, SGNS is the
+fastest method to train, and cheapest (by far) in terms of disk space and
+memory consumption".
+Coincidentally,~\newcite{arXiv:1310.4546} also suggest to use SGNS.
+We incorporate \wtv's original C implementation for learning WEs%
 \footnote{\url{https://code.google.com/archive/p/word2vec/}}
 in an independent pre-processing step, i.e.~we pre-compute the WEs.
 Then, we use gensim%
 \footnote{\url{https://radimrehurek.com/gensim/}}%
 , a Python tool for unsupervised semantic modelling from plain text, to load
-the data, and to extract the vector representations of the embedded words as
-input to our NN.
+the pre-computed data, and to compute the vector representations of
+input words for our NN.
 
 
 \subsection{Character-Level Sub-Word Information} %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -331,272 +344,192 @@ This results in vectors with more than a single \emph{one-hot} dimension.
 
 \subsection{Recurrent Neural Network Layer} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Our implementation uses Keras, a minimalist, highly modular NNs library,
-written in Python and capable of running on top of either TensorFlow or
-Theano~\cite{chollet2015}. 
+Our implementation uses Keras, a high-level NNs library, written in Python and
+capable of running on top of either TensorFlow or Theano~\cite{chollet2015}. 
 In our case it runs on top of Theano, a Python library that allows to define,
 optimize, and evaluate mathematical expressions involving multi-dimensional
 arrays efficiently~\cite{Theano2016}.
 
 The input to our network are sequences of the same length as the sentences we
 process.
-During training we group sentences of the same length into batches.
+During training, we group sentences of the same length into batches and process
+the batches according to sentence length in increasing order.
 Each single word in the sequence is represented by its sub-word information and
-two WEs that come from two sources (see Section~\ref{sec:casestudies}).
+two WEs that come from two sources (see Section~\ref{sec:results}).
 %Note that the WEs of the domain-specific corpus may have only been derived
 %from a small corpus.
-Unknown words, i.e.~words without a WE, are mapped to a randomly generated
-vector representation once, and this representation is reused later.
-In Total, each word is represented by $1,800$ features: two times $500$ (WEs),
-and ten times $80$ for two 5-grams (word beginning and ending).
-(If words are shorter than 5 characters their 5-grams are zero-padded.)
+For unknown words, i.e.~words without a pre-computed WE, we first try to
+find the most similar WE considering 10 surrounding words.  
+If this fails, the unknown word is mapped to a randomly generated vector
+representation.
+In Total, each word is represented by $2,280$ features: two times $500$ (WEs),
+and sixteen times $80$ for two 8-grams (word beginning and ending).
+If words are shorter than 8 characters their 8-grams are zero-padded.
 
 This sequential input is fed into a LSTM layer that, in turn, projects to a
 fully connected output layer with softmax activation function.
+During training we use dropout for the projection into the output layer,
+i.e.~we set a fraction ($0.5$) of the input units to 0 at each update, which
+helps prevent overfitting~\cite{Srivastava2014}.
 We use categorical cross-entropy as loss function and backpropagation in
 conjunction with the RMSprop optimization for learning.  
 At the time of writing, this was the Keras default---or the explicitly
 documented option to be used---for our type of architecture. 
 
 
-\section{Case Study} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\label{sec:casestudies}
+\section{Results} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:results}
 
-
-% For the proposed task we plan to re-use the tweets being part of the EVALITA2014 SENTIPLOC corpus: both the development and test set will be manually annotated for a global amount of 4041+1749 tweets and will be distributed as the new development set. Then a new manually annotated test set composed of 600/700 tweets will be produced using texts from the same period of time. All the annotations will be carried out by three different annotators. 
-% 
-% We will distribute a tokenised version of the texts in order to avoid tokenisation problems among participants and the boring problem of disappeared tweets. 
-
-
-
-
-We used our implementation to participate in the EmpiriST 2015 shared task.
+We used our slightly modified implementation to participate in the \emph{POS
+tagging for Italian Social Media Texts} (PoSTWITA) shared task (ST) of the
+5\textsuperscript{th} periodic evaluation campaign of Natural Language
+Processing (NLP) and speech tools for the Italian language EVALITA 2016.
 First, we describe the corpora used for training, and then the specific system
 configuration(s) for the ST.
-%% and subsequently, to run experiments with different data and parameters for
-%%training (see Subsection~\ref{ssec:case_postempirist}).
-%Following, a short description of the data we used for training.
 
 
-\subsection{Training Data for \wtv and PoS Tagging} %%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Tiger v2.2 (PoS)} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\emph{Tiger v2.2}%
-\footnote{\url{http://www.ims.uni-stuttgart.de/forschung/ressourcen/korpora/tiger.html}}
-is version 2.2 of the TIGERCorpus~\cite{Brants2004} containing German newspaper
-texts. 
-The corpus was semi-automatically PoS tagged, and is one of the standard
-corpora used for German PoS tagging. 
-It contains 888,238 tokens in 50,472 sentences.
-For research and evaluation purposes, the TIGERCorpus can be downloaded for
-free.
+\subsection{Training Data for \wtv and PoS Tagging} %%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{DiDi-IT (PoS, \wtv)} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\emph{didi-it}~\cite{frey-glaznieks-stemle:2016:didi}
+(version September 2016) is the Italian sub-part of the DiDi corpus, a corpus
+of South Tyrolean German and Italian from Facebook (FB) users' wall posts,
+comments on wall posts and private messages.
+
+The Italian part consists of around 100,000 tokens collected from 20 profiles
+of Facebook users residing in South Tyrol.
+This version has about 20,000 PoS tags semi-automatically corrected by a single
+annotator.
+
+The anonymised corpus is freely available for research purposes.
 
 
-\subsubsection{German Wikipedia (\wtv)} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\emph{de.wiki'15}%
-\footnote{\url{http://www1.ids-mannheim.de/kl/projekte/korpora/verfuegbarkeit.html\#Download}}
-are user talk pages (messages from users to users, often questions and advice),
-article talk pages (questions, concerns or comments related to improving a
-Wikipedia article), and article pages of the German wikipedia from 2015, made
-available by the \emph{Institut f\"{u}r Deutsche
-Sprache}\footnote{\url{http://www.ids-mannheim.de}}.
-%% user talk pages
-%% 378,576,711 toks
-%% 15,343,904 s
-%%
-%% article talk pages
-%% 446,551,142 toks 
-%% 17,275,385 s
-%%
-%% article pages
-%% 1,126,462,560 toks
-%% 46,740,611 s
-%%
-% tokens: 378,576,711+446,551,142+1,126,462,560 = 1,951,590,413
-% sentences: 15,343,904+17,275,385+46,740,611 = 79,359,900
-The corpus contains 2 billion tokens 
-(talk:379m, article talk:447m, article:1,1bn) 
-in 79 million sentences 
-(talk:15m, article talk:17m, article:47m), is well-sized for \wtv, and
-also (partly) resembles or target data.
-It is available under the CC BY-SA 3.0\footnote{Creative Commons
-Attribution-ShareAlike 3.0 Unported, i.e.~the data can be copied and
-redistributed, and adapted for any purpose, even commercially. See
-\url{http://creativecommons.org/licenses/by-sa/3.0/} for more details.}
+\subsubsection{Italian UD (PoS, \wtv)} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Universal Dependencies (UD) is a project that is developing
+cross-linguistically consistent treebank annotation for many
+languages.\footnote{\url{http://universaldependencies.org/}}
+
+\emph{italian-UD}%
+\footnote{\url{http://universaldependencies.org/it/overview/introduction.html}}
+(version from January 2015) corpus was originally obtained by conversion from
+ISDT (Italian Stanford Dependency Treebank) and released for the dependency
+parsing ST of EVALITA 2014~\cite{Bosco2014}.
+The corpus has semi-automatically converted PoS tags from the original two
+Italian treebanks, differing both in corpus composition and adopted annotation
+schemes.
+
+The corpus contains around 317,000 tokens in around 13,000 sentences from
+different sources and genres.  
+It is available under the CC BY-NC-SA 3.0\footnote{Creative Commons
+Attribution-NonCommercial-ShareAlike 3.0 Unported, i.e.~the data can be copied
+and redistributed, and adapted for purposes other than commercial ones. See
+\url{https://creativecommons.org/licenses/by-nc-sa/3.0/} for more details.}
 license.
 
 
-\subsubsection{EmpiriST 2015 Data (PoS and \wtv)} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\label{subsec:empirist}
-\emph{empirist}%
-\footnote{\url{https://sites.google.com/site/empirist2015/home/shared-task-data}}
-is the CMC and Web data made available by the organizers of the ST.
-It contains data samples from different CMC genres and samples from text genres
-on the Web.
-The training corpus contains 10,053 tokens and was PoS tagged by two annotators
-(unclear cases were decided by a third person). 
-The trial corpus contains around 3,600 tokens (2,100 CMC%
-\footnote{For evaluation during the development phase we used
-    \emph{empirist}-trial.
-    Unfortunately, we found out only later that the CMC part of the trial data
-    is also part of the training data, i.e.~for the CMC data our evaluation
-    data was identical with the training data.}%
-, 1,500 Web) and was PoS tagged by one annotator (without systematic error
-checks%
-%, i.e.~the accuracy of the PoS annotations is likely lower than on the
-%training data and on the ST final evaluation data
-).
-See~\newcite{empirist2016} for more details.
+\subsubsection{PoSTWITA (PoS and \wtv)} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sssec:postwita}
+\emph{postwita} is the Twitter data made available by the organizers of the ST.
+It contains Twitter tweets from the EVALITA2014 SENTIPLOC corpus: the
+development and test set and additional tweets from the same period of time
+were manually annotated for a global amount of 6438 tweets (114,967 tokens) and
+were distributed as the development set. 
+The data is PoS tagged according to UD but with the additional insertion of
+seven Twitter-specific tags.
+All the annotations were carried out by three different annotators.
+The data was only distributed to the task participants.
+
+
+\subsubsection{C4Corpus (\wtv)} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\emph{c4corpus}%
+\footnote{\url{https://github.com/dkpro/dkpro-c4corpus}} is a full documents
+Italian Web corpus that has been extracted from CommonCrawl, the largest
+publicly available general Web crawl to date. 
+See Habernal~\shortcite{Habernal.et.al.2016.LREC} for details about the corpus
+construction pipeline, and other information about the corpus.
+
+The corpus contains about $670m$ tokens in $22m$ sentences.
+The data is available under the CreativeCommons license
+family. 
+
+
+\subsubsection{PAIS{\`A} (\wtv)} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\emph{paisa}~\cite{paisa2014} is a corpus of authentic contemporary Italian
+texts from the web (harvested in September/October 2010).
+It was created in the context of the project PAIS{\`A} (P{\'i}attaforma per
+l'Apprendimento dell'Italiano Su corpora Annotati) with the aim to provide a
+large resource of freely available Italian texts for language learning by
+studying authentic text materials.
+
+The corpus contains about $270m$ tokens in about $8m$ sentences. 
+The data is available under the CC BY-NC-SA
+3.0\footnote{\url{https://creativecommons.org/licenses/by-nc-sa/3.0/}} license. 
+
 
 %An overview of the used training data can be found in Table~\ref{tab:corpora}.
-
 
 %\begin{table}[h]
 %\begin{center}
 %\begin{tabular}{l|r|r}
 %\hline
 %\multicolumn{1}{c}{} & \multicolumn{1}{c}{Tokens} & \multicolumn{1}{c}{Sentences} \\ \hline
-%empirist       & $10*10^3$     & $0.6*10^3$    \\ \hline
-%Tiger v2.2     & $0.9*10^9$    & $0.05*10^6$   \\ \hline\hline
-%de.wiki'15   	& $2.0*10^9$    & $79*10^6$     \\ \hline
+%corpus 1       & $10*10^3$     & $0.6*10^3$    \\ \hline
+%corpus 2       & $0.9*10^9$    & $0.05*10^6$   \\ \hline\hline
+%corpus 3     	& $2.0*10^9$    & $79*10^6$     \\ \hline
 %%C4Corpus      & $$            & $$            \\ \hline
-%%DECOW14       & $11.7*10^9$   & $600*10^6$    \\ \hline
-%%deTenTen	    & $19.9*10^9$   & $1300*10^6$   \\ \hline
 %\end{tabular}
 %\end{center}
-%\caption{\label{tab:corpora}Training data used for the EmpiriST 2015 shared
+%\caption{\label{tab:corpora}Training data used for the shared
 %    task. The PoS tags of the upper two corpora were used for training.
-%    % (upper part) and additional data for the subsequent experiments (lower
-%    % part).
 %} \end{table}
 
-%\emph{C4Corpus}%
-%\footnote{\url{https://github.com/dkpro/dkpro-c4corpus}} is a full documents
-%German Web corpus that has been extracted from CommonCrawl, the largest
-%publicly available general Web crawl to date. 
-%The data is available under the CreativeCommons license
-%family\footnote{\url{https://creativecommons.org/licenses/}}. 
-%See Habernal~\shortcite{Habernal.et.al.2016.LREC} for details about the corpus
-%construction pipeline, and other information about the corpus.
-%
-%\emph{DECOW14}%
-%\footnote{\url{http://corporafromtheweb.org/decow14/}} is the sentence shuffled
-%German Web corpus by COW created with the 2014 technology of the COW
-%initiative~\cite{SchaeferBildhauer2012}.
-%The data can be used for purposes of academic research.
-%% $11.7*10^9$ tokens 
-%% $0.6*10^9$ (624,767,747) sentences
-%
-%\emph{deTenTen} Web corpus.
-%%DeTenTen
-%% $19.9*10^9$ (19,918,263,493) tokens
-%% $1.3*10^9$ (1,309,696,220) sentences
-%\cite{1120431}
 
+\subsection{PoSTWITA shared task} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{ssec:postwita}
 
-\subsection{EmpiriST 2015 shared task} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\label{ssec:case_empirist}
+For the ST we used one overall configuration for the system but three different
+corpus configurations for training.
+However, only one corpus configuration was entered into the ST: we used PoS
+tags from \emph{didi-it + postwita} (run 1), from \emph{italian-UD} (run 2),
+and from both (run 3).
+For \wtv we trained a 500-dimensional skip-gram model on \emph{didi-it +
+italian-UD + postwita} that ignored all words with less than 2 occurrences
+within a window size of 10; it was trained with negative sampling (value 15).
+We also trained a 500-dimensional skip-gram model on \emph{c4corpus + paisa}
+that ignored all words with less than 33 occurrences within a window size of
+10; it was trained with negative sampling (value 15).
 
-For the ST we used one overall configuration for the system, but we used three
-different corpus configurations for training.
-Consequently, we participated in the ST with three runs:
-we used PoS tags from \emph{empirist} (run 1), from \emph{Tiger v2.2} (run 2),
-and from both (run 3).  
-For \wtv we trained a 500-dimensional skip-gram model on \emph{empirist} that
-ignored all words with less than 3 occurrences within a window size of 10;
-it was trained with negative sampling (value 5) and erroneously%
-\footnote{%
-    According to \wtv's author, technically negative sampling and
-    hierarchical softmax can be combined but one should avoid combining them~%
-    (see~\url{https://groups.google.com/forum/\#!topic/word2vec-toolkit/WUWad9fL0jU}).
-    
-    We had forgotten to deactivate an option in a data processing script.
-}
-also with hierarchical softmax.
-We also trained a 500-dimensional continuous bag-of-words model on
-\emph{de.wiki'15} that ignored all words with less than 25 occurrences within a
-window size of 10; it was trained with negative sampling (value 3) and
-erroneously also with hierarchical softmax.
-
-The rational behind training the two models differently was that according to
-\wtv author's experience%
-\footnote{\url{https://groups.google.com/d/msg/word2vec-toolkit/NLvYXU99cAM/E5ld8LcDxlAJ}}
-a skip-gram model "works well with small amount[s] of the training data, [and]
-represents well even rare words or phrases", and a cbow model is "several times
-faster to train than the skip-gram, [and has] slightly better accuracy for the
-frequent words".
 The other \wtv parameters were left at their default settings%
-\footnote{\texttt{-sample 1e-3 -iter 5 -alpha 0.025} for skip-gram and
-\texttt{-alpha 0.05} for continuous bag-of-words}.
-% empirist.bin -cbow 0 -size 500 -window 10 -hs 1 -negative 5 -min-count 3 
-% bigdata.bin -cbow 1 -size 500 -window 10 -hs 1 -negative 3 -min-count 25
+\footnote{\texttt{-sample 1e-3 -iter 5 -alpha 0.025}}.
 
-To optimize the system's output we ran a simple grid search for three
-parameters: the hidden LSTM layer's size, the dropout value for the projections
-from the LSTM to the output layer during training, and the number of epochs
-during training. 
-The found values were size:$1024$, dropout:$0.1$, epochs:$20$.
-%lstm_output_dims = [128, 256, 512, 1024*]
-%dropouts = [0.1*, 0.25, 0.5, 0.75]
-%nb_epochs = [5, 10, 20*]
+The evaluation of the systems was done by the organisers on unlabelled but
+pre-tokenised data (4759 tokens in 301 tweets), and was based on a
+token-by-token comparison.
+The considered metric was accuracy, i.e.~the number of correctly assigned PoS
+tags divided by the total number of tokens.
 
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{l|r|r}
 \hline
-\multicolumn{1}{c}{} & \multicolumn{1}{c}{CMC} & \multicolumn{1}{c}{Web} \\ \hline
-(1) \emph{empirist}             & $81.03$       & $86.97$ \\ \hline
-(2) \emph{Tiger v2.2}           & $73.56$       & $89.73$ \\ \hline
-(3) \emph{empirist}+\emph{Tiger v2.2} & $85.42$ & $90.63$ \\ \hline\hline
-Winning Team                    & $87.33$       & $93.55$ \\ \hline
+\textbf{(1)} \textbf{\emph{didi-it + postwita}}   & $\textbf{76.00}$        \\ \hline
+(2) \emph{italian-UD}           & $80.54$        \\ \hline
+(3) \emph{didi-it + postwita + italian-UD} & $81.61$  \\ \hline\hline
+Winning Team                    & $93.19$        \\ \hline
 \end{tabular}
 \end{center}
-\caption{\label{tab:results}Official results of our PoS tagger for the three
-runs on the EmpiriST 2015 shared task data.
+\caption{\label{tab:results}Official result(s) of our PoS tagger for the
+three runs on the PoSTWITA ST data.
 } 
 \end{table}
 
-%The official results are listed in Table~\ref{tab:results}.
+We believe, the unexpectedly little performance gain from utilizing the much
+larger \emph{italian-UD} data over the rather small \emph{didi-it + postwita}
+data may be rooted in the insertion of Twitter-specific tags into the data
+(see~\ref{sssec:postwita}), something we did not account for, i.e.~$18,213$ of
+$289,416$ and more importantly $7,778$ of $12,677$ sentences had imperfect
+information during training. 
 
-% 1: empirist_training (tagset:ibk)
-% 2: tiger-2.2 (tagset:1999)
-% 3: empirist_training + tiger-2.2 (tagset:ibk)
-%Our evaluation on the EmpiriST trial data resulted in these accuracy scores:
-%1:~$0.88$, 
-%2:~$0.78$, 
-%3:~$0.93$;
-%and the overall ST evaluation was:
-%1:~$0.84$,
-%2:~$0.82$,
-%3:~$0.88$.
-
-%\subsection{Post-EmpiriST Experiments}
-%\label{ssec:case_postempirist}
-%As a post-EmpiriST addition to the results we wanted to (1)~remedy some errors
-%and oversights in our initial pre-processing and training, (2)~optimize the
-%learning parameters of the word embedding models and the neural network, and
-%(3)~train word embedding models on other data.
-%\fxnote[margin]{add (1)}
-%
-%The optimal learning parameters for the word embedding models were selected
-%according to a comprehensive set of experiments and comparisons by
-%Levy~\shortcite{TACL570}, and observations and suggestions by
-%Mikolov~\shortcite{arXiv:1310.4546}. 
-%For the post-EmpiriST experiments we used the skip-gram with negative-sampling
-%training method (SGNS), with a negative-sampling value of $15$ (and without
-%hierarchical softmax, cf.~Subsection~\ref{ssec:case_empirist}), ignored all
-%words with less than $100$ occurrences within a window size of $10$, and a
-%sub-sampling value of $10^{-5}$. 
-%% cbow=0, negative=15, hs=0, window=10, sample=10^-5 
-%% arXiv:1310.4546: -negative 15 -sample 0.00001
-%% TACL570: alpha=0.75 and dyn=1-> fixed in word2vec algorithm;
-%%There are quite a few differences between the skip-gram and the CBOW models.
-%%However, if you have a lot of training data, their performance should be
-%%comparable.%
-%%\footnote{\url{https://groups.google.com/d/msg/word2vec-toolkit/NLvYXU99cAM/E5ld8LcDxlAJ}}
-%
-%As additional data to train word embedding models we obtained and processed
-%\emph{C4Corpus}, \emph{DECOW14}, and \emph{deTenTen}.
-%
 %\fixme[inline]{The system is said to be trained on various widely available
 %    corpora of German such as Tiger 2.2, DECOW148 etc. It is not discussed in
 %    any detail and thus does not become clear why these corpora were selected
@@ -612,25 +545,10 @@ runs on the EmpiriST 2015 shared task data.
 \section{Conclusion \& Outlook} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:conclusion}
 
-We presented our submission to the EmpiriST 2015 shared task, where we
-participated in the PoS tagging sub-task with fair results on the CMC data and
-adequate results on the Web data. 
-Still, our implementation, albeit following state-of-the art designs and methods, is
-quite unpolished, and can certainly gain performance with more detailed tuning.
-For example, adding special sequence start and sequence stop symbols to the
-input is typically done as a pre-processing step, which might improve the
-results at the beginning and the end of sentences;
-or we might gain some performance by adding additional hidden layers to enable
-the network to learn more intermediate abstractions.
-A more profound design change could also help, e.g.~Recurrent Memory Network
-are a novel recurrent architecture that have been shown to outperform LSTMs on
-some language modelling tasks.
-%and sentence completion tasks, while also allowing insights into the data from
-%a linguistic perspective~\newcite{tran-bisazza-monz:2016:N16-1}.
-Finally, for learning the word embeddings we could use different corpora, or
-selectively extract parts from large web-corpora resembling---as much as
-possible---the type of data that is to be tagged.
-
+We presented our submission to the PoSTWITA ST, where we participated
+with moderate results. 
+In the future, we will try to rerun the experiment with training data that
+takes into consideration the Twitter-specific tags of the ST.
 
 %\section*{Acknowledgments} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %The acknowledgments should go immediately before the references.  Do
