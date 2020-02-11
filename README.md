@@ -35,3 +35,6 @@ PoSTWITA) e dati non etichettati (Italian C4Corpus e PAISÀ) sono stati
 utilizzati in fase di training.
 
 Il sistema è disponibile sotto licenza open source APLv2.
+
+# Paper
+The paper is available here: https://bia.unibz.it/handle/10863/8914
